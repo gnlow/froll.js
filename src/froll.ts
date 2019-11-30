@@ -1,13 +1,12 @@
 interface Case<L extends number> extends Array<any>{
-    0: any;
     length: L;
 }
 interface Props<L extends number> extends Array<Array<any>>{
-    0: Array<any>;
     length: L;
 }
 
-type Mixer<L extends number> = (...values: Case<L>) => any;
+type Mixer<L extends number> = (values: Case<L>) => any;
+type Unmixer<L extends number> = (mixedValue: any) => Case<L>;
 
 class Can<L extends number>{
     props: Props<L>;
@@ -28,21 +27,36 @@ class Can<L extends number>{
     }
     *[Symbol.iterator](){
         for(var i=0;i<this.size;i++){
-            yield this.props.map( (x, j) =>  x[~~(i/ ( j==0 ? 1 : this.sizes[j-1] ) ) % x.length] );
+            yield this.props.map( (x, j) =>  x[~~(i/ ( j==0 ? 1 : this.sizes[j-1] ) ) % x.length] ) as Case<L>;
         }
     }
-    forEach(f: (...param) => void){
+    forEach(f: (param: Case<L>) => void){
         for(var x of this){
             f(x);
         }
     }
     mix(f: Mixer<L>){
-        var out = [];
-        this.forEach( x => out.push( f(...x) ) );
-        return out;
+        var out: Props<1> = [[]] as Props<1>;
+        this.forEach( x => {
+            out[0].push( f(x) );
+        } );
+        return new Can(...out);
+    }
+    unmix(f: Unmixer<L>){
+        var out: Props<L> = [] as Props<L>;
+        this.props[0].forEach( x => {
+            f(x).forEach( (y, i) => {
+                if(out.length - 1 < i){
+                    out.push([]);
+                }
+                out[i].push(y);
+             } ) ;
+        } );
+        return new Can(...out);
     }
 }
 
-var pos = new Can(["0", "1"], ["A", "B", "C"]);
+var pos = new Can([1,2,3,4,5,6], [1,2,3,4,5,6]);
 console.log(pos.sizes);
-console.log(pos.mix((n, a) => n+a))
+var mixed = pos.mix((c) => c[0] + "" + c[1]);
+console.log(mixed.unmix((m) => [m[0], m[1]]));
