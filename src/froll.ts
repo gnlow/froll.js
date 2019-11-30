@@ -1,7 +1,10 @@
 interface Case<L extends number> extends Array<any>{
     length: L;
 }
-interface Props<L extends number> extends Array<Array<any>>{
+interface Possibles extends Array<any>{
+
+}
+interface Props<L extends number> extends Array<Possibles>{
     length: L;
 }
 
@@ -36,14 +39,14 @@ class Can<L extends number>{
         }
     }
     mix(f: Mixer<L>){
-        var out: Props<1> = [[]] as Props<1>;
+        var out: Possibles = [] as Possibles;
         this.forEach( x => {
-            out[0].push( f(x) );
+            out.push( f(x) );
         } );
-        return new Can(...out);
+        return new Can(out);
     }
-    unmix(f: Unmixer<L>){
-        var out: Props<L> = [] as Props<L>;
+    unmix<_L extends number>(f: Unmixer<_L>){
+        var out: Props<_L> = [] as Props<_L>;
         this.props[0].forEach( x => {
             f(x).forEach( (y, i) => {
                 if(out.length - 1 < i){
@@ -59,4 +62,4 @@ class Can<L extends number>{
 var pos = new Can([1,2,3,4,5,6], [1,2,3,4,5,6]);
 console.log(pos.sizes);
 var mixed = pos.mix((c) => c[0] + "" + c[1]);
-console.log(mixed.unmix((m) => [m[0], m[1]]));
+console.log(mixed.unmix((m) => [m[0], m[1]] as Case<2>));
