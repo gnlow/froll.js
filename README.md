@@ -1,4 +1,4 @@
-# mylibrary
+# froll
 Description
 ```js
 
@@ -6,14 +6,14 @@ Description
 ## Installation
 ### NPM
 ```bash
-npm install mylibrary
+npm install froll
 ```
 ```js
-const mylibrary = require("mylibrary");
+const froll = require("froll");
 ```
 ### CDN
 ```html
-<script src="https://unpkg.com/browse/mylibrary/dist/mylibrary.umd.js"></script>
+<script src="https://unpkg.com/browse/froll/dist/froll.umd.js"></script>
 ```
 ## How To Use
 ```js
