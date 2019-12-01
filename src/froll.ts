@@ -8,6 +8,7 @@ interface Props<L extends number> extends Array<Possibles>{
     length: L;
 }
 
+type Roller = (...options: any[]) => Possibles;
 type Mixer<L extends number> = (values: Case<L>) => any;
 type Unmixer<L extends number> = (mixedValue: any) => Case<L>;
 
@@ -59,7 +60,14 @@ class Can<L extends number>{
     }
 }
 
-var pos = new Can([1,2,3,4,5,6], [1,2,3,4,5,6]);
+var roll: Roller = n => {
+    var temp = [];
+    for(var i=0;i<n;i++){
+        temp.push(i+1);
+    }
+    return temp;
+};
+var pos = new Can(roll(6), roll(6));
 console.log(pos.sizes);
 var mixed = pos.mix((c) => c[0] + "" + c[1]);
 console.log(mixed.unmix((m) => [m[0], m[1]] as Case<2>));
