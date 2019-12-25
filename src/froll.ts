@@ -1,18 +1,19 @@
-interface Case<L extends number> extends Array<any>{
+export interface Case<L extends number> extends Array<any>{
     length: L;
 }
-interface Possibles extends Array<any>{
+export interface Possibles extends Array<any>{
 
 }
-interface Props<L extends number> extends Array<Possibles>{
+export interface Props<L extends number> extends Array<Possibles>{
     length: L;
 }
 
-type Roller = (...options: any[]) => Possibles;
-type Mixer<L extends number> = (values: Case<L>) => any;
-type Unmixer<L extends number> = (mixedValue: any) => Case<L>;
+export type Pair<I, O> = [ (input: I) => O, (input: O) => I ];
+export type Roller = (...options: any[]) => Possibles;
+export type Mixer<L extends number> = (values: Case<L>) => any;
+export type Unmixer<L extends number> = (mixedValue: any) => Case<L>;
 
-class Can<L extends number>{
+export class Can<L extends number>{
     props: Props<L>;
     constructor(...props: Props<L>){
         this.props = props;
@@ -59,15 +60,3 @@ class Can<L extends number>{
         return new Can(...out);
     }
 }
-
-var roll: Roller = n => {
-    var temp = [];
-    for(var i=0;i<n;i++){
-        temp.push(i+1);
-    }
-    return temp;
-};
-var pos = new Can(roll(6), roll(6));
-console.log(pos.sizes);
-var mixed = pos.mix((c) => c[0] + "" + c[1]);
-console.log(mixed.unmix((m) => [m[0], m[1]] as Case<2>));
